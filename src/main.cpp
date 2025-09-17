@@ -3,6 +3,8 @@
 #include "input.h"
 #include "player.h"
 
+#include "room.h"
+
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
 
@@ -10,7 +12,6 @@
 #define SCREEN_HEIGHT 288
 
 namespace rl = raylib;
-
 
 int main(void)
 {
@@ -21,7 +22,9 @@ int main(void)
     viewportRenderTexture.GetTexture().SetFilter(TEXTURE_FILTER_POINT);
 
     Input input = Input();
-    Player player = Player(rl::Vector2(0,0));
+    Player player = Player(rl::Vector2(64,64));
+
+    Room room = Room();
 
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
@@ -37,18 +40,12 @@ int main(void)
             scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
         }
 
-        player.Update(input);
+        player.Update(input, room);
         
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
+            room.Draw();
             player.Draw();
-            for(int i = 0; i < 10; i++)
-            {
-                for(int j = 0; j < 10; j++)
-                {
-                    ::DrawRectangleLines(i*32,j*32,32,32,RED);
-                }
-            }
 
             window.DrawFPS(16, 16);
         viewportRenderTexture.EndMode();

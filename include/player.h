@@ -2,6 +2,7 @@
 
 #include "vendor/rlcpp/raylib-cpp.hpp"
 #include "input.h"
+#include "room.h"
 
 #include <string>
 
@@ -16,7 +17,7 @@ public:
     Player(rl::Vector2 position);
     ~Player();
 
-    void Update(const Input& input);
+    void Update(const Input& input, const Room& room);
     void Draw();
 };
 
@@ -28,10 +29,35 @@ Player::~Player()
 {
 }
 
-void Player::Update(const Input &input)
+void Player::Update(const Input &input, const Room& room)
 {
-    position.x += input.GetAxisHorizontal();
-    position.y += input.GetAxisVertical();
+    int xToMove = input.GetAxisHorizontal();
+    int yToMove = input.GetAxisVertical();
+
+    //TODO - identify nearby tiles and check against them ONLY
+    //TODO - separate horizontal and vertical checks
+    bool collide = false;
+    for(int y = 0; y < 10; ++y)
+    {
+        for(int x = 0; x < 10; ++x)
+        {
+            if (room.tiles[y][x].collide)
+            {
+                Rectangle wallTileRect = (Rectangle) {x*32,y*32,32,32};
+                if (::CheckCollisionRecs((Rectangle){position.x + xToMove, position.y + yToMove, 32, 32}, wallTileRect) )
+                {
+                    collide = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!collide)
+    {
+        position.x += xToMove;
+        position.y += yToMove;
+    }
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());
     float angle = a.Angle(rl::Vector2(1,0));
