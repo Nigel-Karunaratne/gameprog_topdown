@@ -1,25 +1,31 @@
 #include "vendor/rlcpp/raylib-cpp.hpp"
 
+#include "input.h"
+#include "player.h"
+
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 288
 
 namespace rl = raylib;
+
 
 int main(void)
 {
     rl::Window window = rl::Window(SCREEN_WIDTH, SCREEN_HEIGHT, "TopDownGame Runtime", FLAG_WINDOW_RESIZABLE);
     window.SetTargetFPS(60);
 
-    rl::RenderTexture2D viewportRenderTexture = LoadRenderTexture(800,600);
+    rl::RenderTexture2D viewportRenderTexture = LoadRenderTexture(SCREEN_WIDTH,SCREEN_HEIGHT);
     viewportRenderTexture.GetTexture().SetFilter(TEXTURE_FILTER_POINT);
 
+    Input input = Input();
+    Player player = Player(rl::Vector2(0,0));
 
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
-    float scale = MIN((float)currentScreenWidth/800, (float)currentScreenHeight/600);
+    float scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
 
     while (!window.ShouldClose())
     {
@@ -28,12 +34,14 @@ int main(void)
         {
             currentScreenWidth = ::GetScreenWidth();
             currentScreenHeight = ::GetScreenHeight();
-            scale = MIN((float)currentScreenWidth/800, (float)currentScreenHeight/600);
+            scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
         }
+
+        player.Update(input);
         
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
-
+            player.Draw();
             for(int i = 0; i < 10; i++)
             {
                 for(int j = 0; j < 10; j++)
@@ -41,7 +49,9 @@ int main(void)
                     ::DrawRectangleLines(i*32,j*32,32,32,RED);
                 }
             }
-        EndTextureMode();
+
+            window.DrawFPS(16, 16);
+        viewportRenderTexture.EndMode();
 
         window.BeginDrawing();
             window.ClearBackground(BLACK);

@@ -33,5 +33,5 @@ inline int Input::GetAxisHorizontal() const
 
 inline int Input::GetAxisVertical() const
 {
-    return (rl::Keyboard::IsKeyDown(KEY_LEFT) ? -1 : 0) + (rl::Keyboard::IsKeyDown(KEY_RIGHT) ? 1 : 0);
+    return (rl::Keyboard::IsKeyDown(KEY_UP) ? -1 : 0) + (rl::Keyboard::IsKeyDown(KEY_DOWN) ? 1 : 0);
 }
