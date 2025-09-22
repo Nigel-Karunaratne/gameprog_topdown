@@ -2,7 +2,7 @@
 
 #include "input.h"
 #include "player.h"
-
+#include "textures.h"
 #include "room.h"
 
 #define MAX(a, b) ((a)>(b)? (a) : (b))
@@ -25,6 +25,8 @@ int main(void)
     Player player = Player(rl::Vector2(64,64));
 
     Room room = Room();
+
+    TextureManager textureManager = TextureManager();
 
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
