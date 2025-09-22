@@ -13,6 +13,8 @@ class Room
 private:
 public:
     std::vector<std::vector<Tile>> tiles;
+    int xSize;
+    int ySize;
 
     Room();
     ~Room();
@@ -22,13 +24,15 @@ public:
 
 Room::Room()
 {
-    for (int i = 0; i < 10; ++i)
+    ySize = 9;
+    xSize = 10;
+    for (int y = 0; y < ySize; ++y)
     {
         tiles.push_back(std::vector<Tile>());
-        for (int j = 0; j < 10; ++j)
+        for (int x = 0; x < xSize; ++x)
         {
-            bool x = (i == 0 || i == 9 || j == 0 || j == 9);
-            tiles[i].push_back((Tile){x ? RED : BLUE, x});
+            bool val = (y == 0 || y == 8 || x == 0 || x == 9);
+            tiles[y].push_back((Tile){val ? RED : BLACK, val});
         }
     }
 }
@@ -39,11 +43,12 @@ Room::~Room()
 
 void Room::Draw()
 {
-    for(int i = 0; i < 10; i++)
+    for(int y = 0; y < ySize; ++y)
     {
-        for(int j = 0; j < 10; j++)
+        for(int x = 0; x < xSize; ++x)
         {
-            ::DrawRectangleLines(i*32,j*32,32,32,tiles[i][j].c);
+            // if (tiles[x][y].collide)
+            ::DrawRectangleLines (x*32,y*32,32,32,tiles[y][x].c);
         }
     }
 }

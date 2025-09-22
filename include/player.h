@@ -34,37 +34,43 @@ void Player::Update(const Input &input, const Room& room)
     int xToMove = input.GetAxisHorizontal();
     int yToMove = input.GetAxisVertical();
 
-    //TODO - identify nearby tiles and check against them ONLY
-    //TODO - separate horizontal and vertical checks
-    bool collide = false;
-    for(int y = 0; y < 10; ++y)
+    //TODO - identify nearby tiles and check against them ONLY (broad phase --> narrow phase)
+    //TODO - separate up, down, left, right checks
+    bool collideX = false;
+    bool collideY = false;
+    for(int y = 0; y < room.ySize; ++y)
     {
-        for(int x = 0; x < 10; ++x)
+        for(int x = 0; x < room.xSize; ++x)
         {
             if (room.tiles[y][x].collide)
             {
-                Rectangle wallTileRect = (Rectangle) {x*32,y*32,32,32};
-                if (::CheckCollisionRecs((Rectangle){position.x + xToMove, position.y + yToMove, 32, 32}, wallTileRect) )
+                //NOTE - at some point, change rectangle to use ints?
+                Rectangle wallTileRect = (Rectangle) {x*32.0f,y*32.0f,32,32};
+                if (::CheckCollisionRecs((Rectangle){position.x + xToMove, position.y, 32, 32}, wallTileRect) )
                 {
-                    collide = true;
-                    break;
+                    collideX = true;
+                }
+                else if (::CheckCollisionRecs((Rectangle){position.x, position.y + yToMove, 32, 32}, wallTileRect) )
+                {
+                    collideY = true;
                 }
             }
         }
     }
 
-    if (!collide)
+    if (!collideX)
     {
         position.x += xToMove;
-        position.y += yToMove;
     }
+    if (!collideY)
+        position.y += yToMove;
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());
     float angle = a.Angle(rl::Vector2(1,0));
     // float angle = atan2f(a.y, a.x) + PI/2;
 
     
-    ::TraceLog(TraceLogLevel::LOG_INFO, std::to_string(angle).c_str());
+    // ::TraceLog(TraceLogLevel::LOG_INFO, std::to_string(angle).c_str());
 }
 
 void Player::Draw()
