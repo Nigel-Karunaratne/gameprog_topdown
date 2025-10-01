@@ -2,7 +2,10 @@
 
 #include "input.h"
 #include "player.h"
-#include "textures.h"
+
+#include "texture.h"
+#include "audio.h"
+
 #include "room.h"
 
 #define MAX(a, b) ((a)>(b)? (a) : (b))

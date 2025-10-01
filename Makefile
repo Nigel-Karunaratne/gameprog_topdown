@@ -17,7 +17,7 @@ endif
 
 
 all: bin/ src/main.cpp
-	$(CXX) src/main.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
+	$(CXX) src/main.cpp src/texture.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
 
 clean:
 	rm bin/$(EXEC_NAME)

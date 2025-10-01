@@ -1,25 +1,4 @@
-#pragma once
-
-#include "raylib-cpp.hpp"
-namespace rl = raylib;
-
-#include <string>
-#include <vector>
-#include <deque>
-
-class TextureManager
-{
-private:
-    std::deque<std::string> textureFileNames;
-    std::vector<rl::Texture2D> loadedTextures;
-
-public:
-    TextureManager();
-    ~TextureManager(); //NOTE - raylib-cpp Texture2D handles unload w/ its destructor
-
-    const rl::Texture2D& GetTextureWhole(int id);
-    void DrawTextureSlice(int textureID, const rl::Rectangle& rect, int x, int y);
-};
+#include "texture.h"
 
 TextureManager::TextureManager()
 {
@@ -57,7 +36,7 @@ inline const rl::Texture2D &TextureManager::GetTextureWhole(int id)
     return loadedTextures[id];
 }
 
-inline void TextureManager::DrawTextureSlice(int textureID, const rl::Rectangle& rect, int x, int y)
+inline void TextureManager::DrawTextureSlice(int textureID, int textureX, int textureY, int x, int y)
 {
-    ::DrawTextureRec(loadedTextures[textureID], rect, (Vector2){(float)x,(float)y}, WHITE);
+    ::DrawTextureRec(loadedTextures[textureID], (Rectangle){(float)textureX, (float)textureY, 32, 32}, (Vector2){(float)x,(float)y}, WHITE);
 }
