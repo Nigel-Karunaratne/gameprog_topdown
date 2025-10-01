@@ -3,13 +3,14 @@ EXEC_NAME := main
 
 CXX := g++
 
-INCLUDE_DIRS := -I ./include/ -I ./ -I ./vendor/raylib
+INCLUDE_DIRS := -I ./include/ -I ./ -I ./vendor/raylib -I ./vendor/rlcpp
 LIB_DIRS := -L ./vendor/raylib
 
 LIBS := -lraylib
 
 ifeq ($(OS),Windows_NT)
 	LIBS += -lgdi32 -lwinmm
+	EXEC_NAME := main.exe
 else
 	LIBS += -lGL -lm -lpthread -ldl -lrt -lX11
 endif

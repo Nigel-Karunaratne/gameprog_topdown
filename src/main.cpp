@@ -1,4 +1,4 @@
-#include "vendor/rlcpp/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 
 #include "input.h"
 #include "player.h"

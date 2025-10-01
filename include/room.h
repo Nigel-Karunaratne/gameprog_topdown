@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vendor/rlcpp/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 #include <vector>
 
 typedef struct Tile {

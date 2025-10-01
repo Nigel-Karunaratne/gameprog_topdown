@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vendor/rlcpp/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 namespace rl = raylib;
 
 #include <string>
