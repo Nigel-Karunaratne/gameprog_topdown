@@ -13,6 +13,9 @@ class Player
 private:
     rl::Vector2 position;
     int direction = 0;
+
+    bool item1 = false;
+    bool item2 = false;
 public:
     Player(rl::Vector2 position);
     ~Player();
@@ -31,38 +34,27 @@ Player::~Player()
 
 void Player::Update(const Input &input, const Room& room)
 {
+    // Process Input
     int xToMove = input.GetAxisHorizontal();
     int yToMove = input.GetAxisVertical();
 
-    //TODO - identify nearby tiles and check against them ONLY (broad phase --> narrow phase)
-    //TODO - separate up, down, left, right checks
-    bool collideX = false;
-    bool collideY = false;
-    for(int y = 0; y < room.ySize; ++y)
+    if (input.GetItem1Pressed() && item1)
     {
-        for(int x = 0; x < room.xSize; ++x)
-        {
-            if (room.tiles[y][x].collide)
-            {
-                //NOTE - at some point, change rectangle to use ints?
-                Rectangle wallTileRect = (Rectangle) {x*32.0f,y*32.0f,32,32};
-                if (::CheckCollisionRecs((Rectangle){position.x + xToMove, position.y, 32, 32}, wallTileRect) )
-                {
-                    collideX = true;
-                }
-                else if (::CheckCollisionRecs((Rectangle){position.x, position.y + yToMove, 32, 32}, wallTileRect) )
-                {
-                    collideY = true;
-                }
-            }
-        }
+        // TODO - use item 1
     }
+    else if (input.GetItem2Pressed() && item2)
+    {
+        // TODO - use item 2
+    }
+    
 
-    if (!collideX)
+    CollisionResult collisionResult = room.CheckMovementCollision(position.x, position.y, xToMove, yToMove, 32, 32);
+
+    if (!collisionResult.collideX)
     {
         position.x += xToMove;
     }
-    if (!collideY)
+    if (!collisionResult.collideY)
         position.y += yToMove;
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());

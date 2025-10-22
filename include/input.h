@@ -35,3 +35,13 @@ inline int Input::GetAxisVertical() const
 {
     return (rl::Keyboard::IsKeyDown(KEY_UP) ? -1 : 0) + (rl::Keyboard::IsKeyDown(KEY_DOWN) ? 1 : 0);
 }
+
+inline bool Input::GetItem1Pressed() const
+{
+    return rl::Keyboard::IsKeyPressed(KEY_Z);
+}
+
+inline bool Input::GetItem2Pressed() const
+{
+    return rl::Keyboard::IsKeyPressed(KEY_X);
+}

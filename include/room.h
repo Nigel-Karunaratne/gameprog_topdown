@@ -8,6 +8,13 @@ typedef struct Tile {
     bool collide;
 } Tile;
 
+typedef struct CollisionResult {
+    bool collideX;
+    bool collideY;
+};
+
+namespace rl = raylib;
+
 class Room
 {
 private:
@@ -18,6 +25,8 @@ public:
 
     Room();
     ~Room();
+
+    CollisionResult CheckMovementCollision(int x, int y, int xToMove, int yToMove, int xSize=32, int ySize=32) const;
 
     void Draw();
 };
@@ -39,6 +48,34 @@ Room::Room()
 
 Room::~Room()
 {
+}
+
+inline CollisionResult Room::CheckMovementCollision(int posX, int posY, int xToMove, int yToMove, int xSize, int ySize) const
+{
+    //TODO - identify nearby tiles and check against them ONLY (broad phase --> narrow phase)
+    //TODO - separate up, down, left, right checks
+    CollisionResult returnVal = (CollisionResult){false, false};
+    for(int y = 0; y < this->ySize; ++y)
+    {
+        for(int x = 0; x < this->xSize; ++x)
+        {
+            if (this->tiles[y][x].collide)
+            {
+                //NOTE - at some point, change rectangle to use ints?
+                Rectangle wallTileRect = (Rectangle) {x*32.0f,y*32.0f,32,32};
+                if (::CheckCollisionRecs((Rectangle){posX + xToMove, posY, xSize, ySize}, wallTileRect) )
+                {
+                    returnVal.collideX = true;
+                }
+                else if (::CheckCollisionRecs((Rectangle){posX, posY + yToMove, xSize, ySize}, wallTileRect) )
+                {
+                    returnVal.collideY = true;
+                }
+            }
+        }
+    }
+    
+    return returnVal;
 }
 
 void Room::Draw()
