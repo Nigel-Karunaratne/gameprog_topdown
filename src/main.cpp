@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "audio.h"
 
-#include "room.h"
+#include "world.h"
 
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
@@ -27,9 +27,9 @@ int main(void)
     Input input = Input();
     Player player = Player(rl::Vector2(64,64));
 
-    Room room = Room();
+    World* world = new World();
 
-    TextureManager textureManager = TextureManager();
+    // TextureManager textureManager = TextureManager();
 
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
@@ -45,11 +45,11 @@ int main(void)
             scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
         }
 
-        player.Update(input, room);
+        player.Update(input, *world);
         
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
-            room.Draw();
+            world->DrawCurrentRoom();
             player.Draw();
 
             window.DrawFPS(16, 16);
@@ -63,5 +63,8 @@ int main(void)
                 (float)SCREEN_HEIGHT * scale}, (Vector2){0,0}, 0.0f, WHITE);
         window.EndDrawing();
     }
+
+    delete world;
+    
     return 0;
 }

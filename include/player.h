@@ -2,7 +2,7 @@
 
 #include "raylib-cpp.hpp"
 #include "input.h"
-#include "room.h"
+#include "world.h"
 
 #include <string>
 
@@ -16,11 +16,12 @@ private:
 
     bool item1 = false;
     bool item2 = false;
+
 public:
     Player(rl::Vector2 position);
     ~Player();
 
-    void Update(const Input& input, const Room& room);
+    void Update(const Input& input, World& world);
     void Draw();
 };
 
@@ -32,8 +33,10 @@ Player::~Player()
 {
 }
 
-void Player::Update(const Input &input, const Room& room)
+void Player::Update(const Input &input, World& world)
 {
+    // if (isTransitioning)
+        // return;
     // Process Input
     int xToMove = input.GetAxisHorizontal();
     int yToMove = input.GetAxisVertical();
@@ -48,7 +51,7 @@ void Player::Update(const Input &input, const Room& room)
     }
     
 
-    CollisionResult collisionResult = room.CheckMovementCollision(position.x, position.y, xToMove, yToMove, 32, 32);
+    CollisionResult collisionResult = world.CheckMovementCollision(position.x, position.y, xToMove, yToMove, 32, 32);
 
     if (!collisionResult.collideX)
     {
@@ -58,6 +61,51 @@ void Player::Update(const Input &input, const Room& room)
         position.y += yToMove;
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());
+
+    // After movement, check if on bounds of screen. If so, ask World to trigger room swap.
+    world.CheckIfSideRoomExists(-1,0);
+    if (position.x <= 0) //Left
+    {
+        if (world.CheckIfSideRoomExists(-1,0))
+        {
+            world.ChangeActiveRoom(-1,0);
+            position.x = 288;
+        }
+        else
+            position.x = 0;
+    }
+    else if (position.x >= 288) // Right
+    {
+        if (world.CheckIfSideRoomExists(1,0))
+        {
+            world.ChangeActiveRoom(1,0);
+            position.x = 0;
+        }
+        else
+            position.x = 288;
+    }
+    else if (position.y <= 0) // Top
+    {
+        if (world.CheckIfSideRoomExists(0,-1))
+        {
+            world.ChangeActiveRoom(0,-1);
+            position.y = 224;
+        }
+        else
+            position.y = 0;
+    }
+    else if (position.y >= 224) // Bottom
+    {
+        if (world.CheckIfSideRoomExists(0,1))
+        {
+            world.ChangeActiveRoom(0,1);
+            position.y = 0;
+        }
+        else
+            position.y = 224;
+    }
+
+
     float angle = a.Angle(rl::Vector2(1,0));
     // float angle = atan2f(a.y, a.x) + PI/2;
 

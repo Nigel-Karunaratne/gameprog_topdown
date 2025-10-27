@@ -11,7 +11,7 @@ typedef struct Tile {
 typedef struct CollisionResult {
     bool collideX;
     bool collideY;
-};
+} CollisionResult;
 
 namespace rl = raylib;
 
@@ -20,8 +20,8 @@ class Room
 private:
 public:
     std::vector<std::vector<Tile>> tiles;
-    int xSize;
-    int ySize;
+    int ySize = 9;
+    int xSize = 10;
 
     Room();
     ~Room();
@@ -33,14 +33,14 @@ public:
 
 Room::Room()
 {
-    ySize = 9;
+    ySize = 8;
     xSize = 10;
     for (int y = 0; y < ySize; ++y)
     {
         tiles.push_back(std::vector<Tile>());
         for (int x = 0; x < xSize; ++x)
         {
-            bool val = (y == 0 || y == 8 || x == 0 || x == 9);
+            bool val = (y == 0 || y == 7 /*|| x == 0 || x == 9*/);
             tiles[y].push_back((Tile){val ? RED : BLACK, val});
         }
     }
@@ -63,11 +63,11 @@ inline CollisionResult Room::CheckMovementCollision(int posX, int posY, int xToM
             {
                 //NOTE - at some point, change rectangle to use ints?
                 Rectangle wallTileRect = (Rectangle) {x*32.0f,y*32.0f,32,32};
-                if (::CheckCollisionRecs((Rectangle){posX + xToMove, posY, xSize, ySize}, wallTileRect) )
+                if (::CheckCollisionRecs((Rectangle){(float)posX + xToMove, (float)posY, (float)xSize, (float)ySize}, wallTileRect) )
                 {
                     returnVal.collideX = true;
                 }
-                else if (::CheckCollisionRecs((Rectangle){posX, posY + yToMove, xSize, ySize}, wallTileRect) )
+                else if (::CheckCollisionRecs((Rectangle){(float)posX, (float)posY + yToMove, (float)xSize, (float)ySize}, wallTileRect) )
                 {
                     returnVal.collideY = true;
                 }
@@ -84,8 +84,9 @@ void Room::Draw()
     {
         for(int x = 0; x < xSize; ++x)
         {
-            // if (tiles[x][y].collide)
-            ::DrawRectangleLines (x*32,y*32,32,32,tiles[y][x].c);
+            if (tiles[y][x].collide)
+            // ::DrawRectangleLines (x*32,y*32,32,32,tiles[y][x].c);
+                ::DrawRectangle(x*32,y*32,32,32,tiles[y][x].c);
         }
     }
 }
