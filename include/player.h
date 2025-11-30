@@ -4,7 +4,11 @@
 #include "input.h"
 #include "world.h"
 
+#include "texturemanager.h"
+
 #include <string>
+
+#include <iostream>
 
 namespace rl = raylib;
 
@@ -13,6 +17,9 @@ class Player
 private:
     rl::Vector2 position;
     int direction = 0;
+    bool is_moving = false;
+    int movement_frame = 0;
+    float _movement_frame_timer = 0.15;
 
     bool item1 = false;
     bool item2 = false;
@@ -21,8 +28,8 @@ public:
     Player(rl::Vector2 position);
     ~Player();
 
-    void Update(const Input& input, World& world);
-    void Draw();
+    void Update(float delta, const Input& input, World& world);
+    void Draw(const TextureManager& textureManager);
 };
 
 Player::Player(rl::Vector2 position) : position(position)
@@ -33,7 +40,7 @@ Player::~Player()
 {
 }
 
-void Player::Update(const Input &input, World& world)
+void Player::Update(float delta, const Input &input, World& world)
 {
     // if (isTransitioning)
         // return;
@@ -62,6 +69,22 @@ void Player::Update(const Input &input, World& world)
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());
 
+    std::cout << this->direction << std::endl;
+    if (a.LengthSqr() > 0.5)
+    {
+        this->direction = a.Angle((Vector2) { 0, -1 }) * (2/PI) + 2;
+        this->is_moving = true;
+
+        this->_movement_frame_timer -= delta;
+        if (this->_movement_frame_timer <= 0)
+        {
+            this->_movement_frame_timer = 0.15;
+            this->movement_frame = (this->movement_frame+1) % 2;
+        }
+    }
+    else
+        this->is_moving = false;
+
     // After movement, check if on bounds of screen. If so, ask World to trigger room swap.
     world.CheckIfSideRoomExists(-1,0);
     if (position.x <= 0) //Left
@@ -69,7 +92,7 @@ void Player::Update(const Input &input, World& world)
         if (world.CheckIfSideRoomExists(-1,0))
         {
             world.ChangeActiveRoom(-1,0);
-            position.x = 288;
+            position.x = 288 - 3;
         }
         else
             position.x = 0;
@@ -79,7 +102,7 @@ void Player::Update(const Input &input, World& world)
         if (world.CheckIfSideRoomExists(1,0))
         {
             world.ChangeActiveRoom(1,0);
-            position.x = 0;
+            position.x = 0 + 3;
         }
         else
             position.x = 288;
@@ -89,7 +112,7 @@ void Player::Update(const Input &input, World& world)
         if (world.CheckIfSideRoomExists(0,-1))
         {
             world.ChangeActiveRoom(0,-1);
-            position.y = 224;
+            position.y = 224 - 3;
         }
         else
             position.y = 0;
@@ -99,23 +122,18 @@ void Player::Update(const Input &input, World& world)
         if (world.CheckIfSideRoomExists(0,1))
         {
             world.ChangeActiveRoom(0,1);
-            position.y = 0;
+            position.y = 0 + 3;
         }
         else
             position.y = 224;
     }
-
-
-    float angle = a.Angle(rl::Vector2(1,0));
-    // float angle = atan2f(a.y, a.x) + PI/2;
-
-    
-    // ::TraceLog(TraceLogLevel::LOG_INFO, std::to_string(angle).c_str());
 }
 
-void Player::Draw()
+void Player::Draw(const TextureManager& textureManager)
 {
-    ::DrawRectangle(position.GetX(), position.GetY(), 32, 32, GREEN);
-
-    ::DrawText(std::to_string(direction).c_str(), 16, 16 + 32*4, 32, BLACK);
+    // ::DrawRectangle(position.GetX(), position.GetY(), 32, 32, GREEN);
+    if (this->is_moving)
+        textureManager.DrawPlayerMoving(this->direction, this->movement_frame, this->position.GetX(), this->position.GetY());
+    else
+        textureManager.DrawPlayerIdle(this->direction, this->position.GetX(), this->position.GetY());
 }

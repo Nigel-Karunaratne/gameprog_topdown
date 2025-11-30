@@ -52,12 +52,12 @@ int main(void)
             scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
         }
 
-        player.Update(input, *world);
+        player.Update(window.GetFrameTime(), input, *world);
         
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
             world->DrawCurrentRoom(textureManager);
-            player.Draw();
+            player.Draw(textureManager);
 
             window.DrawFPS(16, 16);
         viewportRenderTexture.EndMode();
