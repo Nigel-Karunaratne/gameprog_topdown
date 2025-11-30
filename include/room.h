@@ -3,8 +3,10 @@
 #include "raylib-cpp.hpp"
 #include <vector>
 
+#include "texturemanager.h"
+
 typedef struct Tile {
-    Color c;
+    int index;
     bool collide;
 } Tile;
 
@@ -15,12 +17,14 @@ typedef struct CollisionResult {
 
 namespace rl = raylib;
 
+#include <iostream>
+
 class Room
 {
 private:
 public:
     std::vector<std::vector<Tile>> tiles;
-    int ySize = 9;
+    int ySize = 8;
     int xSize = 10;
 
     Room();
@@ -28,20 +32,34 @@ public:
 
     CollisionResult CheckMovementCollision(int x, int y, int xToMove, int yToMove, int xSize=32, int ySize=32) const;
 
-    void Draw();
+    void insertTileAt(int index, Tile tile);
+
+    void Draw(const TextureManager& textureManager);
+
+    void debug_print()
+    {
+        for (int y = 0; y < ySize; ++y)
+        {
+            for (int x = 0; x < xSize; ++x)
+            {
+                std::cout << tiles[y][x].index << ",";
+            }
+            std::cout << std::endl;
+        }
+    }
 };
 
 Room::Room()
 {
-    ySize = 8;
-    xSize = 10;
+    // ySize = 8;
+    // xSize = 10;
     for (int y = 0; y < ySize; ++y)
     {
         tiles.push_back(std::vector<Tile>());
         for (int x = 0; x < xSize; ++x)
         {
-            bool val = (y == 0 || y == 7 /*|| x == 0 || x == 9*/);
-            tiles[y].push_back((Tile){val ? RED : BLACK, val});
+            // bool val = (y == 0 || y == 7 /*|| x == 0 || x == 9*/);
+            tiles[y].push_back((Tile){ 0, false });
         }
     }
 }
@@ -78,15 +96,21 @@ inline CollisionResult Room::CheckMovementCollision(int posX, int posY, int xToM
     return returnVal;
 }
 
-void Room::Draw()
+inline void Room::insertTileAt(int index, Tile tile)
+{
+    int x = index % xSize;
+    int y = (int) index / xSize;
+    tiles[y][x] = tile;
+}
+
+void Room::Draw(const TextureManager& textureManager)
 {
     for(int y = 0; y < ySize; ++y)
     {
         for(int x = 0; x < xSize; ++x)
         {
-            if (tiles[y][x].collide)
-            // ::DrawRectangleLines (x*32,y*32,32,32,tiles[y][x].c);
-                ::DrawRectangle(x*32,y*32,32,32,tiles[y][x].c);
+            textureManager.DrawLevelTile(tiles[y][x].index, x*32, y*32, 32, 32);
         }
+
     }
 }

@@ -3,7 +3,7 @@ EXEC_NAME := main
 
 CXX := g++
 
-INCLUDE_DIRS := -I ./include/ -I ./ -I ./vendor/raylib -I ./vendor/rlcpp
+INCLUDE_DIRS := -I ./include/ -I ./ -I ./vendor/raylib -I ./vendor/rlcpp -I ./vendor/json
 LIB_DIRS := -L ./vendor/raylib
 
 LIBS := -lraylib
@@ -17,7 +17,8 @@ endif
 
 
 all: bin/ src/main.cpp
-	$(CXX) src/main.cpp src/texture.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
+	$(CXX) src/main.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
+	cp -rf ./assets ./bin
 
 clean:
 	rm bin/$(EXEC_NAME)

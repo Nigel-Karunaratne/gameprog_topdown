@@ -3,16 +3,20 @@
 #include "input.h"
 #include "player.h"
 
-#include "texture.h"
-#include "audio.h"
-
 #include "world.h"
+#include "worldloader.h"
+
+#include "room.h"
+
+#include "texturemanager.h"
 
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 288
+
+#include "iostream"
 
 namespace rl = raylib;
 
@@ -27,9 +31,12 @@ int main(void)
     Input input = Input();
     Player player = Player(rl::Vector2(64,64));
 
-    World* world = new World();
+    WorldLoader* wl = new WorldLoader();
+    World* world = wl->LoadFromFile("assets/room/main.json").release();
 
-    // TextureManager textureManager = TextureManager();
+    world->debug_print();
+
+    TextureManager textureManager = TextureManager();
 
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
@@ -49,7 +56,7 @@ int main(void)
         
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
-            world->DrawCurrentRoom();
+            world->DrawCurrentRoom(textureManager);
             player.Draw();
 
             window.DrawFPS(16, 16);
@@ -65,6 +72,7 @@ int main(void)
     }
 
     delete world;
+    delete wl;
     
     return 0;
 }
