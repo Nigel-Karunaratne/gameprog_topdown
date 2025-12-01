@@ -21,7 +21,8 @@ private:
     int movement_frame = 0;
     float _movement_frame_timer = 0.15;
 
-    int speed = 1.0f;
+    int speed = 1;
+    int hp = 3;
 
     bool item1 = false;
     bool item2 = false;
@@ -34,6 +35,7 @@ public:
     void Draw(const TextureManager& textureManager);
 
     int GetHP() const;
+    void setHP(int val) { this->hp = val; }
 
     int GetSpeed() const {return this->speed;}
     void setSpeed(int val) { this->speed = val;}
@@ -147,5 +149,5 @@ void Player::Draw(const TextureManager& textureManager)
 
 inline int Player::GetHP() const
 {
-    return 3;
+    return this->hp;
 }

@@ -56,8 +56,8 @@ int main(void)
     float scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
 
 #ifdef DEBUG_ON
-    int debugPlayerSpeed = 0.0f;
-    debugPlayerSpeed = player.GetSpeed();
+    int debugPlayerSpeed= player.GetSpeed();
+    int debugHP = player.GetHP();
     bool stayOpen = true;
 #endif
 
@@ -96,10 +96,12 @@ int main(void)
 #ifdef DEBUG_ON
             rlImGuiBegin();
             ImGui::Begin("Debug Window");
-            ImGui::SliderInt("PlayerSpeed", &debugPlayerSpeed, 0, 10);
+            ImGui::SliderInt("Speed (player)", &debugPlayerSpeed, 0, 10);
+            ImGui::SliderInt("HP (player)", &debugHP, 0, 7);
             ImGui::End();
 
             player.setSpeed(debugPlayerSpeed);
+            player.setHP(debugHP);
 
             if (ImGui::BeginMainMenuBar()) {
                 if (ImGui::BeginMenu("Debug")) {
