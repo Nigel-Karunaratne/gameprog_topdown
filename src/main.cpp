@@ -3,6 +3,8 @@
 #include "input.h"
 #include "player.h"
 
+#include "ui.h"
+
 #include "world.h"
 #include "worldloader.h"
 
@@ -31,6 +33,8 @@ int main(void)
     Input input = Input();
     Player player = Player(rl::Vector2(64,64));
 
+    UI ui = UI();
+
     WorldLoader* wl = new WorldLoader();
     World* world = wl->LoadFromFile("assets/room/main.json").release();
 
@@ -57,6 +61,7 @@ int main(void)
         viewportRenderTexture.BeginMode();
             ::ClearBackground(WHITE);
             world->DrawCurrentRoom(textureManager);
+            ui.Draw(player.GetHP());
             player.Draw(textureManager);
 
             window.DrawFPS(16, 16);

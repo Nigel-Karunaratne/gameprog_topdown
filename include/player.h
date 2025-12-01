@@ -30,6 +30,8 @@ public:
 
     void Update(float delta, const Input& input, World& world);
     void Draw(const TextureManager& textureManager);
+
+    int GetHP() const;
 };
 
 Player::Player(rl::Vector2 position) : position(position)
@@ -136,4 +138,9 @@ void Player::Draw(const TextureManager& textureManager)
         textureManager.DrawPlayerMoving(this->direction, this->movement_frame, this->position.GetX(), this->position.GetY());
     else
         textureManager.DrawPlayerIdle(this->direction, this->position.GetX(), this->position.GetY());
+}
+
+inline int Player::GetHP() const
+{
+    return 3;
 }
