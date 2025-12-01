@@ -12,6 +12,13 @@
 
 #include "texturemanager.h"
 
+#define DEBUG_ON
+
+#ifdef DEBUG_ON
+#include "../vendor/rlimgui/rlImGui.h"
+#include "../vendor/imgui/imgui.h"
+#endif
+
 #define MAX(a, b) ((a)>(b)? (a) : (b))
 #define MIN(a, b) ((a)<(b)? (a) : (b))
 
@@ -26,6 +33,8 @@ int main(void)
 {
     rl::Window window = rl::Window(SCREEN_WIDTH, SCREEN_HEIGHT, "TopDownGame Runtime", FLAG_WINDOW_RESIZABLE);
     window.SetTargetFPS(60);
+
+    rlImGuiSetup(true);
 
     rl::RenderTexture2D viewportRenderTexture = LoadRenderTexture(SCREEN_WIDTH,SCREEN_HEIGHT);
     viewportRenderTexture.GetTexture().SetFilter(TEXTURE_FILTER_POINT);
@@ -45,6 +54,11 @@ int main(void)
     int currentScreenWidth = SCREEN_WIDTH;
     int currentScreenHeight = SCREEN_HEIGHT;
     float scale = MIN((float)currentScreenWidth/SCREEN_WIDTH, (float)currentScreenHeight/SCREEN_HEIGHT);
+
+#ifdef DEBUG_ON
+    int debugPlayerSpeed = 0.0f;
+    debugPlayerSpeed = player.GetSpeed();
+#endif
 
     while (!window.ShouldClose())
     {
@@ -73,8 +87,30 @@ int main(void)
             viewportRenderTexture.GetTexture().Draw((Rectangle){0.0f,0.0f,(float)viewportRenderTexture.texture.width, (float)-viewportRenderTexture.texture.height},
                 (Rectangle){ (GetScreenWidth() - ((float)SCREEN_WIDTH * scale))*0.5f, (GetScreenHeight() - ((float)SCREEN_HEIGHT * scale)) * 0.5f, (float)SCREEN_WIDTH * scale,
                 (float)SCREEN_HEIGHT * scale}, (Vector2){0,0}, 0.0f, WHITE);
+
+#ifdef DEBUG_ON
+            rlImGuiBegin();
+            ImGui::Begin("Debug Window");
+            ImGui::SliderInt("PlayerSpeed", &debugPlayerSpeed, 0, 10);
+            ImGui::End();
+
+            player.setSpeed(debugPlayerSpeed);
+
+            if (ImGui::BeginMainMenuBar()) {
+                if (ImGui::BeginMenu("Debug")) {
+                    if (ImGui::MenuItem("Open")) { /* action */ }
+                    if (ImGui::MenuItem("Save")) { /* action */ }
+                    if (ImGui::MenuItem("Exit")) { /* action */ }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }
+            rlImGuiEnd();
+#endif
         window.EndDrawing();
     }
+
+    rlImGuiShutdown();
 
     delete world;
     delete wl;

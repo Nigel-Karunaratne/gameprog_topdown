@@ -17,7 +17,7 @@ endif
 
 
 all: bin/ src/main.cpp
-	$(CXX) src/main.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
+	$(CXX) src/main.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) -L ./vendor/ -lrlImGui $(INCLUDE_DIRS)
 	cp -rf ./assets ./bin
 
 clean:

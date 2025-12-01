@@ -21,6 +21,8 @@ private:
     int movement_frame = 0;
     float _movement_frame_timer = 0.15;
 
+    int speed = 1.0f;
+
     bool item1 = false;
     bool item2 = false;
 
@@ -32,6 +34,9 @@ public:
     void Draw(const TextureManager& textureManager);
 
     int GetHP() const;
+
+    int GetSpeed() const {return this->speed;}
+    void setSpeed(int val) { this->speed = val;}
 };
 
 Player::Player(rl::Vector2 position) : position(position)
@@ -47,8 +52,8 @@ void Player::Update(float delta, const Input &input, World& world)
     // if (isTransitioning)
         // return;
     // Process Input
-    int xToMove = input.GetAxisHorizontal();
-    int yToMove = input.GetAxisVertical();
+    int xToMove = input.GetAxisHorizontal() * this->speed;
+    int yToMove = input.GetAxisVertical() * this->speed;
 
     if (input.GetItem1Pressed() && item1)
     {
