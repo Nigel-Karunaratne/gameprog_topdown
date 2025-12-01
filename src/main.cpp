@@ -58,9 +58,14 @@ int main(void)
 #ifdef DEBUG_ON
     int debugPlayerSpeed = 0.0f;
     debugPlayerSpeed = player.GetSpeed();
+    bool stayOpen = true;
 #endif
 
+#ifdef DEBUG_ON
+    while (!window.ShouldClose() && stayOpen)
+#else
     while (!window.ShouldClose())
+#endif
     {
         // Calculate scale for render texture scaling
         if (::GetScreenWidth() != currentScreenWidth || ::GetScreenHeight() != currentScreenHeight)
@@ -98,9 +103,7 @@ int main(void)
 
             if (ImGui::BeginMainMenuBar()) {
                 if (ImGui::BeginMenu("Debug")) {
-                    if (ImGui::MenuItem("Open")) { /* action */ }
-                    if (ImGui::MenuItem("Save")) { /* action */ }
-                    if (ImGui::MenuItem("Exit")) { /* action */ }
+                    if (ImGui::MenuItem("Exit")) { stayOpen = false; }
                     ImGui::EndMenu();
                 }
                 ImGui::EndMainMenuBar();
@@ -110,7 +113,9 @@ int main(void)
         window.EndDrawing();
     }
 
+#ifdef DEBUG_ON
     rlImGuiShutdown();
+#endif
 
     delete world;
     delete wl;
