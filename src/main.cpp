@@ -12,8 +12,6 @@
 
 #include "texturemanager.h"
 
-#define DEBUG_ON
-
 #ifdef DEBUG_ON
 #include "../vendor/rlimgui/rlImGui.h"
 #include "../vendor/imgui/imgui.h"
@@ -34,7 +32,9 @@ int main(void)
     rl::Window window = rl::Window(SCREEN_WIDTH, SCREEN_HEIGHT, "TopDownGame Runtime", FLAG_WINDOW_RESIZABLE);
     window.SetTargetFPS(60);
 
+#ifdef DEBUG_ON
     rlImGuiSetup(true);
+#endif
 
     rl::RenderTexture2D viewportRenderTexture = LoadRenderTexture(SCREEN_WIDTH,SCREEN_HEIGHT);
     viewportRenderTexture.GetTexture().SetFilter(TEXTURE_FILTER_POINT);

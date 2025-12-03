@@ -25,3 +25,5 @@ All libraries should be placed in a `./vendor` folder in the repo
 - Place the ImGui files in the `vendor/imgui` folder.
 
 Please note that the Makefiles' `all` target can compile for both Windows and Linux, but using the makefile, anything related to Imgui (the debug features) only works with Linux for now.
+
+To compile without Debug features, use the command `make DEBUG_ON=0`

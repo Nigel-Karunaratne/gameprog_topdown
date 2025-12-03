@@ -8,6 +8,8 @@ LIB_DIRS := -L ./vendor/raylib
 
 LIBS := -lraylib
 
+DEBUG := 1
+
 ifeq ($(OS),Windows_NT)
 	LIBS += -lgdi32 -lwinmm
 	EXEC_NAME := main.exe
@@ -15,9 +17,14 @@ else
 	LIBS += -lGL -lm -lpthread -ldl -lrt -lX11
 endif
 
+ifeq ($(DEBUG),1)
+	LIBS += -L ./vendor/ -lrlImGui -DDEBUG_ON
+endif
+
+
 
 all: bin/ src/main.cpp
-	$(CXX) src/main.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) -L ./vendor/ -lrlImGui $(INCLUDE_DIRS)
+	$(CXX) src/main.cpp src/audio.cpp -o bin/$(EXEC_NAME) $(LIB_DIRS) $(LIBS) $(INCLUDE_DIRS)
 	cp -rf ./assets ./bin
 
 clean:

@@ -78,7 +78,6 @@ void Player::Update(float delta, const Input &input, World& world)
 
     rl::Vector2 a = rl::Vector2(input.GetAxisHorizontal(), input.GetAxisVertical());
 
-    std::cout << this->direction << std::endl;
     if (a.LengthSqr() > 0.5)
     {
         this->direction = a.Angle((Vector2) { 0, -1 }) * (2/PI) + 2;
